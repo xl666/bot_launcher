@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+  web:
+    build: ./contenedorDjango/bots_web/app
+    environment:
+      PATH_PREFIX: bots
+    ports:
+      - 9002:8000
+    volumes:
+      - ./contenedorDjango/bots_web/app/prueba:/code
+  
+  bot:
+    image: demobot
+    ports:
+      - 9001:8080
+
+
+  nginx_bots:
+    image: nginx
+    restart: always
+    volumes:
+      - ./contenedorDjango/nginx/templates:/etc/nginx/templates
+      - ./contenedorDjango/bots_web/app/prueba/static:/static
+    depends_on:
+      - web
+    ports:
+      - 8000:80
+    environment:
+      PATH_PREFIX: bots
+
